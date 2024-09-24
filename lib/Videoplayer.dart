@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -13,7 +12,7 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture; 
-
+  
   @override
   void initState()  {
     super.initState();
@@ -34,13 +33,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.dispose();
   } 
 
+  VideoPlayerValue getState() {return _controller.value;}
+  VideoPlayerController getController () {return _controller;}
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Butterfly Video"),
-      ),
-      body: FutureBuilder(
+    var videoWidth = MediaQuery.sizeOf(context).width; 
+    var videoHeight = MediaQuery.sizeOf(context).height * 0.2;
+    return SizedBox(
+      width: videoWidth,
+      height: videoHeight,
+      child: FutureBuilder(
         future: _initializeVideoPlayerFuture, 
         builder: (context, snapshot)  {
           // If Videoplayer is initialized
@@ -59,6 +62,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         },
         ),
 
+        /*
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             // Wrap Play/Pause Button in call to `setState`
@@ -74,6 +78,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               _controller.value.isPlaying ? Icons.pause : Icons.play_arrow
             ),
           ),
+          */
     );
   }
 
