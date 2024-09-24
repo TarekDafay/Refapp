@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -38,11 +39,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var videoWidth = MediaQuery.sizeOf(context).width; 
-    var videoHeight = MediaQuery.sizeOf(context).height * 0.2;
+    double videoWidth = MediaQuery.orientationOf(context)== Orientation.portrait ? MediaQuery.sizeOf(context).width : MediaQuery.sizeOf(context).height;//MediaQuery.sizeOf(context).height * _controller.value.aspectRatio; 
     return SizedBox(
       width: videoWidth,
-      height: videoHeight,
       child: FutureBuilder(
         future: _initializeVideoPlayerFuture, 
         builder: (context, snapshot)  {

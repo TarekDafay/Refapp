@@ -8,32 +8,25 @@ class Playbar extends StatelessWidget {
   
   @override
   Widget build(BuildContext context)  {
-    return Row(
-      children: [
+    var buttons = [
         ElevatedButton(
-          onPressed: () {
-            // Action for Button 1
-            print('Button 2 pressed');
-          },
+          onPressed: () {},
           child: const Icon(Icons.fast_rewind)
         ),
 
         ElevatedButton(
-          onPressed: () {
-            // Action for Button 1
-            print('Button 1 pressed');
-          },
+          onPressed: () { },
           child: const Icon(Icons.play_arrow)
         ),
           
         ElevatedButton(
-          onPressed: () {
-            // Action for Button 1
-            print('Button 2 pressed');
-          },
+          onPressed: () { },
           child: const Icon(Icons.fast_forward)
         ),
-      ],
-    );
+      ];
+    if(MediaQuery.orientationOf(context) == Orientation.portrait)  {
+      return Row(children: buttons);
+    }
+    return Column(children: buttons);
   }
 }

@@ -7,9 +7,11 @@ class EditorView extends StatelessWidget {
   const EditorView ({super.key});
 
   Scaffold portraitView(BuildContext context) {
+    var width = MediaQuery.sizeOf(context).width;
+    var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
         appBar: AppBar(),
-        body: const Column(
+        body: Column(
           children: <Widget> [
             Row(
               children: [VideoPlayerScreen()
@@ -18,35 +20,43 @@ class EditorView extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [Playbar()],
-            )
+            ),
+            Container (child: Text("$width"),
+            ),
+            Container (child: Text("$height"),
+            ),
           ]
         )
     );
   }
 
   Scaffold landscapeView(BuildContext context) {
+    var width = MediaQuery.sizeOf(context).width;
+    var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
         appBar: AppBar(),
-        body: const Column(
-          children: <Widget> [
-            Row(
-              children: [RotatedBox(
-                quarterTurns: 1,
-                child: VideoPlayerScreen()
-                )
-                ],
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+        body: const Row(
+            children: [
+            Expanded(
+              child: Column(
+                children: [
+                  RotatedBox(
+                  quarterTurns: 0,
+                  child: VideoPlayerScreen()
+              ),
+              ],
+              crossAxisAlignment: CrossAxisAlignment.start,
             ),
-            /*
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Playbar()],
-            )
-            */
-          ]
+            ),
+            Expanded(
+              child: Column(
+                children: [Playbar()],
+                crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+            ),
+            ],
         )
-    ); 
+        );
   }
 
   @override
