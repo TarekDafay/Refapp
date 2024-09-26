@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 import 'Videoplayer.dart';
 import 'Playbar.dart';
 
+/*
+  widget.controller = VideoPlayerController.networkUrl(
+  Uri.parse(
+  'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+  ),
+  );
+  */
+
 class EditorView extends StatelessWidget {
-  const EditorView ({super.key});
+  final VideoPlayerController controller;
+  EditorView ({super.key}) : controller = VideoPlayerController.networkUrl(
+      Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'));
 
   Scaffold portraitView(BuildContext context) {
     var width = MediaQuery.sizeOf(context).width;
@@ -14,16 +25,18 @@ class EditorView extends StatelessWidget {
         body: Column(
           children: <Widget> [
             Row(
-              children: [VideoPlayerScreen()
+              children: [VideoPlayerScreen(controller: controller)
                 ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Playbar()],
+              children: [Playbar(controller: controller,)],
             ),
             Container (child: Text("$width"),
             ),
             Container (child: Text("$height"),
+            ),
+            Container (child: TestClass(),
             ),
           ]
         )
@@ -31,18 +44,16 @@ class EditorView extends StatelessWidget {
   }
 
   Scaffold landscapeView(BuildContext context) {
-    var width = MediaQuery.sizeOf(context).width;
-    var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
         appBar: AppBar(),
-        body: const Row(
+        body: Row(
             children: [
             Expanded(
               child: Column(
                 children: [
                   RotatedBox(
                   quarterTurns: 0,
-                  child: VideoPlayerScreen()
+                  child: VideoPlayerScreen(controller: controller,)
               ),
               ],
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,13 +61,13 @@ class EditorView extends StatelessWidget {
             ),
             Expanded(
               child: Column(
-                children: [Playbar()],
                 crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Playbar(controller: controller)],
               ),
             ),
             ],
         )
-        );
+      );
   }
 
   @override
@@ -68,4 +79,25 @@ class EditorView extends StatelessWidget {
     }
       
   }
+}
+
+class TestClass extends StatefulWidget {
+  const TestClass({super.key});
+
+  @override
+  State<TestClass> createState() => TestClassState();
+}
+
+class TestClassState extends State<TestClass> {
+  
+  @override
+  void initState()  {
+    super.initState();
+  }
+  void playVideo() {
+    print("Hello im under de Water, please help me, its too much raining, wuuuh");
+  }
+
+  @override
+  Widget build(BuildContext context) {return const Scaffold();}
 }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:ref_app/EditorView.dart';
+import 'package:video_player/video_player.dart';
 import 'Videoplayer.dart';
 
 class Playbar extends StatelessWidget {
-  //final VideoPlayerScreen _videoPlayer;
-  //const Playbar(this._videoPlayer);
-  const Playbar({super.key});
+  final VideoPlayerController controller;
+  const Playbar({super.key, required this.controller});
   
+  void playVideo() {controller.play();}
+  void pauseVideo() {controller.pause();}
+
   @override
   Widget build(BuildContext context)  {
     var buttons = [
@@ -15,7 +19,9 @@ class Playbar extends StatelessWidget {
         ),
 
         ElevatedButton(
-          onPressed: () { },
+          onPressed: () { 
+            controller.play();
+          },
           child: const Icon(Icons.play_arrow)
         ),
           
