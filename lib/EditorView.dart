@@ -3,14 +3,7 @@ import 'package:video_player/video_player.dart';
 
 import 'Videoplayer.dart';
 import 'Playbar.dart';
-
-/*
-  widget.controller = VideoPlayerController.networkUrl(
-  Uri.parse(
-  'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-  ),
-  );
-  */
+import 'Toolbar.dart';
 
 class EditorView extends StatelessWidget {
   final VideoPlayerController controller;
@@ -21,7 +14,7 @@ class EditorView extends StatelessWidget {
     var width = MediaQuery.sizeOf(context).width;
     var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
-        appBar: AppBar(),
+        appBar: Toolbar(),
         body: Column(
           children: <Widget> [
             Row(
@@ -45,8 +38,8 @@ class EditorView extends StatelessWidget {
 
   Scaffold landscapeView(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Row(
+        appBar: Toolbar(),
+        body: const Row(
             children: [
             Expanded(
               child: Column(
