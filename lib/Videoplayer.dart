@@ -49,24 +49,6 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> {
           }
         },
         ),
-
-        /*
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Wrap Play/Pause Button in call to `setState`
-            setState(() {
-              if(controller.value.isPlaying) {
-                controller.pause();
-              } else  {
-                controller.play();
-              }
-            });
-          },
-          child: Icon(
-              controller.value.isPlaying ? Icons.pause : Icons.play_arrow
-            ),
-          ),
-          */
     );
   }
 

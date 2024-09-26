@@ -3,12 +3,19 @@ import 'package:ref_app/EditorView.dart';
 import 'package:video_player/video_player.dart';
 import 'Videoplayer.dart';
 
-class Playbar extends StatelessWidget {
+
+class Playbar extends StatefulWidget {
   final VideoPlayerController controller;
-  const Playbar({super.key, required this.controller});
-  
-  void playVideo() {controller.play();}
-  void pauseVideo() {controller.pause();}
+  Playbar({super.key, required this.controller});
+
+  @override
+  State<Playbar> createState() => PlaybarState();
+}
+
+class PlaybarState extends State<Playbar> {
+  bool isPlaying = false;
+  void playVideo() {widget.controller.play();}
+  void pauseVideo() {widget.controller.pause();}
 
   @override
   Widget build(BuildContext context)  {
@@ -17,14 +24,17 @@ class Playbar extends StatelessWidget {
           onPressed: () {},
           child: const Icon(Icons.fast_rewind)
         ),
-
+        
         ElevatedButton(
-          onPressed: () { 
-            controller.play();
-          },
-          child: const Icon(Icons.play_arrow)
+        onPressed: () {setState(() { 
+        widget.controller.value.isPlaying
+                  ? pauseVideo()
+                  : playVideo();
+        },
+        );
+        },
+            child: Icon(!widget.controller.value.isPlaying ? Icons.play_arrow : Icons.pause),
         ),
-          
         ElevatedButton(
           onPressed: () { },
           child: const Icon(Icons.fast_forward)
