@@ -1,45 +1,34 @@
 import 'dart:io';
-import 'dart:math';
+import 'package:matcher/matcher.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
-  const VideoPlayerScreen({super.key});
+  final VideoPlayerController controller;
+  VideoPlayerScreen({super.key, required this.controller});
 
   @override
-  State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+  State<VideoPlayerScreen> createState() => VideoPlayerScreenState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  late VideoPlayerController _controller;
+class VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late Future<void> _initializeVideoPlayerFuture; 
-  
+
   @override
   void initState()  {
     super.initState();
-
-    _controller = VideoPlayerController.networkUrl(
-      Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-      ),
-    );
-    //_controller = VideoPlayerController.file(File('/home/borsi/Videos/2021-04-26 21-04-28.mp4'));
-    
-    _initializeVideoPlayerFuture = _controller.initialize();
+    _initializeVideoPlayerFuture = widget.controller.initialize();
   }
 
   @override
   void dispose()  {
-    _controller.dispose();
+    widget.controller.dispose();
     super.dispose();
   } 
 
-  VideoPlayerValue getState() {return _controller.value;}
-  VideoPlayerController getController () {return _controller;}
-
   @override
   Widget build(BuildContext context) {
-    double videoWidth = MediaQuery.orientationOf(context)== Orientation.portrait ? MediaQuery.sizeOf(context).width : MediaQuery.sizeOf(context).height;//MediaQuery.sizeOf(context).height * _controller.value.aspectRatio; 
+    double videoWidth = MediaQuery.orientationOf(context)== Orientation.portrait ? MediaQuery.sizeOf(context).width : MediaQuery.sizeOf(context).height;//MediaQuery.sizeOf(context).height * controller.value.aspectRatio; 
     return SizedBox(
       width: videoWidth,
       child: FutureBuilder(
@@ -48,8 +37,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
           // If Videoplayer is initialized
           if(snapshot.connectionState == ConnectionState.done)  {
               return AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
+                aspectRatio: widget.controller.value.aspectRatio,
+                child: VideoPlayer(widget.controller),
                 );
           }
           // If Videoplayer is still initializing
@@ -60,24 +49,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
           }
         },
         ),
-
-        /*
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Wrap Play/Pause Button in call to `setState`
-            setState(() {
-              if(_controller.value.isPlaying) {
-                _controller.pause();
-              } else  {
-                _controller.play();
-              }
-            });
-          },
-          child: Icon(
-              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow
-            ),
-          ),
-          */
     );
   }
 
