@@ -6,47 +6,44 @@ import 'Playbar.dart';
 import 'Toolbar.dart';
 
 class EditorView extends StatelessWidget {
-  final VideoPlayerController controller;
+  VideoPlayerController controller;
+  late VideoPlayerScreen videoplayer;
   EditorView ({super.key}) : controller = VideoPlayerController.networkUrl(
       Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'));
 
-  Scaffold portraitView(BuildContext context) {
-    var width = MediaQuery.sizeOf(context).width;
-    var height = MediaQuery.sizeOf(context).height;
+  Scaffold portraitView(BuildContext context, VideoPlayerScreen videoPlayer) {
+    controller = VideoPlayerController.networkUrl(
+      Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'));
     return Scaffold(
         appBar: Toolbar(),
         body: Column(
           children: <Widget> [
             Row(
-              children: [VideoPlayerScreen(controller: controller)
+              children: [videoPlayer
                 ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [Playbar(controller: controller,)],
             ),
-            Container (child: Text("$width"),
-            ),
-            Container (child: Text("$height"),
-            ),
-            Container (child: TestClass(),
-            ),
           ]
         )
     );
   }
 
-  Scaffold landscapeView(BuildContext context) {
+  Scaffold landscapeView(BuildContext context, VideoPlayerScreen videoPlayer) {
+    controller = VideoPlayerController.networkUrl(
+    Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'));
     return Scaffold(
         appBar: Toolbar(),
-        body: const Row(
+        body: Row(
             children: [
             Expanded(
               child: Column(
                 children: [
                   RotatedBox(
                   quarterTurns: 0,
-                  child: VideoPlayerScreen(controller: controller,)
+                  child: videoPlayer
               ),
               ],
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,32 +62,12 @@ class EditorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context)  {
+    VideoPlayerScreen videoPlayer = VideoPlayerScreen(controller: controller);
     if(MediaQuery.orientationOf(context)== Orientation.portrait) {
-      return portraitView(context);
+      return portraitView(context, videoPlayer);
     } else  {
-      return landscapeView(context);
+      return landscapeView(context, videoPlayer);
     }
       
   }
-}
-
-class TestClass extends StatefulWidget {
-  const TestClass({super.key});
-
-  @override
-  State<TestClass> createState() => TestClassState();
-}
-
-class TestClassState extends State<TestClass> {
-  
-  @override
-  void initState()  {
-    super.initState();
-  }
-  void playVideo() {
-    print("Hello im under de Water, please help me, its too much raining, wuuuh");
-  }
-
-  @override
-  Widget build(BuildContext context) {return const Scaffold();}
 }
