@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'EditorView.dart';
+import 'ExportView.dart';
+import 'ProjectView.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +15,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Videoplayer Demo",
-      home: EditorView (
-      )
+      initialRoute: '/project',
+      routes: {
+        '/project': (context) => const ProjectView(),
+        '/editor': (context) => EditorView(),
+        '/export': (context) => const ExportView(),
+      },
     );
   }
 }
