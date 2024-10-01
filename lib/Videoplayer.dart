@@ -12,7 +12,7 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  late Future<void> _initializeVideoPlayerFuture; 
+  late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState()  {

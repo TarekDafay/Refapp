@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
       title: "Videoplayer Demo",
       initialRoute: '/project',
       routes: {
-        '/project': (context) => const ProjectView(),
+        '/project': (context) => ProjectView(),
         '/editor': (context) => EditorView(),
-        '/export': (context) => const ExportView(),
+        '/export': (context) => ExportView(),
       },
     );
   }
