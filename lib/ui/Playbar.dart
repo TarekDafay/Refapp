@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ref_app/EditorView.dart';
+import 'package:ref_app/ui/EditorView.dart';
 import 'package:video_player/video_player.dart';
 import 'Videoplayer.dart';
 

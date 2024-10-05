@@ -37,6 +37,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   video_player: ^2.9.1
   file_picker: ^8.1.2
+  rxdart: ^0.28.0
+  bloc: ^8.1.4
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
