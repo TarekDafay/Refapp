@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ref_app/bloc/Editor_bloc.dart';
 import 'package:ref_app/bloc/Editor_state.dart';
+
 import 'package:video_player/video_player.dart';
+import '../bloc/videoplayer_bloc.dart';
 
 import 'Videoplayer.dart';
+import '../bloc/videoplayer_state.dart';
+import '../bloc/videoplayer_event.dart';
 import 'Playbar.dart';
 import 'Toolbar.dart';
 
@@ -15,7 +19,10 @@ class EditorView extends StatelessWidget {
   Widget build(BuildContext context)  {
     //VideoPlayerScreen videoPlayer = VideoPlayerScreen(controller: widget.controller);
     if(MediaQuery.orientationOf(context)== Orientation.portrait) {
-      return Scaffold();//portraitView(context, videoPlayer);
+        return BlocListener<EditorBloc, EditorState>(
+        listener: (context, state){
+      },
+      child: portraitView(context));
     } else  {
       return BlocListener<EditorBloc, EditorState>(
         listener: (context, state){
@@ -24,6 +31,54 @@ class EditorView extends StatelessWidget {
       //landscapeView(context, videoPlayer);
     }
       
+  }
+
+  Scaffold portraitView(BuildContext context) {
+    late VideoPlayerController controller; 
+    var state = BlocProvider.of<VideoPlayerBloc>(context).state;
+    if(state is VideoPlayerLoaded)  {
+      controller = (state as VideoPlayerLoaded).controller;
+    } else  {
+      return Scaffold(
+        appBar: Toolbar(),
+        body: Center(child: Text(state.toString()))
+      );        
+    }
+    return Scaffold(
+        appBar: Toolbar(),
+        body: Container(
+          child: Center(
+            child: LayoutBuilder( 
+              builder: (BuildContext context, BoxConstraints constraints) { 
+                double aspectRatio = controller.value.aspectRatio;
+                var size = controller.value.size.width;
+                bool isInit = controller.value.isInitialized;
+                double height = constraints.maxHeight; 
+                double width = constraints.maxWidth; 
+                return Column(
+                  children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: width,
+                      height: width * aspectRatio,
+                      child: VideoplayerWindow()
+                    ) 
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text("The aspect ratio is $size\n Videoplayer is initialized " + state.toString())
+                  ],
+                )
+                ]
+                );
+                //return Text("The height of the container is $height"); 
+              }, 
+            ), 
+          ), 
+          ),
+        );
   }
   /*
   VideoPlayerController controller;
@@ -65,20 +120,19 @@ class EditorView extends StatelessWidget {
     */
     return Scaffold(
         appBar: Toolbar(),
-        body: VideoplayerWindow()
-      );
+        body: Container(
+          child: Center(
+            child: LayoutBuilder( 
+              builder: (BuildContext context, BoxConstraints constraints) { 
+                double height = constraints.maxHeight; 
+  
+                return Text("The height of the container is $height"); 
+              }, 
+            ), 
+          ), 
+          ),
+        );
         /*
-            children: [
-            Expanded(
-              child: Column(
-                children: [
-                  FittedBox(
-                  child: VideoplayerWindow()
-              ),
-              ],
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ),
-            ),
                   Column(
               children: <Widget> [
                 Text(widget.toolbar.video.path)

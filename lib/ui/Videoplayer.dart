@@ -8,19 +8,20 @@ class VideoplayerWindow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double videoWidth = MediaQuery.orientationOf(context)== Orientation.portrait ? MediaQuery.sizeOf(context).width : MediaQuery.sizeOf(context).height; 
-    Future<void> initializeVideoPlayerFuture = BlocProvider.of<VideoPlayerBloc>(context).state.controller.initialize();
-    VideoPlayerController controller = BlocProvider.of<VideoPlayerBloc>(context).state.controller;
+    //Future<void> initializeVideoPlayerFuture = BlocProvider.of<VideoPlayerBloc>(context).state.controller.initialize();
+
+    late VideoPlayerController controller; 
+    var state = BlocProvider.of<VideoPlayerBloc>(context).state;
+    if(state is VideoPlayerLoaded)  {
+      controller = (state as VideoPlayerLoaded).controller;
+    } else  {
+      return Scaffold(body: Center(child: Text(state.toString())));    
+    }
     return 
     Scaffold(
       body: BlocBuilder<VideoPlayerBloc,VideoPlayerState>(
         builder: (context,state)  {
-        return SizedBox(
-          width: videoWidth,
-          child: FutureBuilder(
-            future: initializeVideoPlayerFuture, 
-            builder: (context, snapshot)  {
-              // If Videoplayer is initialized
-              if(snapshot.connectionState == ConnectionState.done)  {
+              if(controller.value.isInitialized)  {
                   return AspectRatio(
                     aspectRatio: controller.value.aspectRatio,
                     child: VideoPlayer(controller),
@@ -33,7 +34,7 @@ class VideoplayerWindow extends StatelessWidget {
                 );
             }
         },
+        
     ));
-  }));
   }
 }

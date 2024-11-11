@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import 'package:ref_app/bloc/FileLoader_bloc.dart';
+import 'package:ref_app/bloc/FileLoader_state.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -39,6 +40,7 @@ class _ToolbarState extends State<Toolbar>  {
           
           if(result != null) {
             PlatformFile pltFile = result.files.single;
+            
             widget.video = File(pltFile.path!);
             print(pltFile.path);
           } else  {
@@ -51,6 +53,7 @@ class _ToolbarState extends State<Toolbar>  {
         ),
         TextButton(
           onPressed: () {
+            print("Navigator clicked!!!!");
             Navigator.pushNamed(context, "/project");
           },
           child: Text("Project")

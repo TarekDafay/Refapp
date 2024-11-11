@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'Toolbar.dart';
+import 'ProjectList.dart';
 
 class ProjectView extends StatelessWidget {
   Toolbar toolbar;
@@ -11,7 +12,8 @@ class ProjectView extends StatelessWidget {
       appBar: toolbar,
         body: Column(
         children: <Widget> [
-          Text(toolbar.video.absolute.path)
+          Text(toolbar.video.absolute.path),
+          //ProjectList()
       ],
 
     )
