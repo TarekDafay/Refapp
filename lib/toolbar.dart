@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:ref_app/home_screen.dart';
+import 'package:ref_app/game_list.dart';
 import 'package:ref_app/editor_view.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -11,8 +12,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
+    GameList(),
+    Test(),
     HomeScreen(),
-    const VideoEditorExample(),
   ];
 
   @override
