@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+
+// Api documentation available at https://api.openligadb.de/index.html
+const endpoint = "https://api.openligadb.de/getmatchdata/"; // https://api.openligadb.de/getmatchdata/bl1/2020/1
+
 class Team {
   final int teamId;
   final String teamName;
