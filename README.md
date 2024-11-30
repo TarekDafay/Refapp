@@ -1,8 +1,7 @@
-# test2
+# ref_app
+Mobile Application to Analyze Match Gameplay
 
-A new Flutter project.
-
-## Getting Started
+## Getting Started developing a flutter application
 
 This project is a starting point for a Flutter application.
 
