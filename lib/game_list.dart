@@ -122,8 +122,7 @@ class MatchDetailScreen extends StatelessWidget {
             Text('Team 1: ${match['team1']['teamName']}'),
             Text('Team 2: ${match['team2']['teamName']}'),
             const SizedBox(height: 16),
-            Text("Goals:", style: const TextStyle(fontWeight: FontWeight.bold)),
-              if (sortedGoals.isNotEmpty)
+            if (sortedGoals.isNotEmpty)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
