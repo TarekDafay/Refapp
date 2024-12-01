@@ -12,7 +12,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
-    GameList(),
+    MatchesListView(),
     Test(),
     HomeScreen(),
   ];
