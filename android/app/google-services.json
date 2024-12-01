@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1001465387311",
+    "project_id": "refapp-ce63e",
+    "storage_bucket": "refapp-ce63e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001465387311:android:d0196061c4b90cb926a9da",
+        "android_client_info": {
+          "package_name": "com.example.ref_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ2HqWhPdtncMnJaRAwRi_rIir1Q_3IcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

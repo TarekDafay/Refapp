@@ -42,6 +42,9 @@ dependencies:
   file: ^7.0.1
   cross_file: ^0.3.4+2
   intl: ^0.18.0
+  firebase_core: any
+  firebase_auth: ^4.6.3
+  firebase_storage: ^11.2.4
 
 
 dev_dependencies:

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:ref_app/Login.dart';
 import 'package:ref_app/toolbar.dart';
 
 
@@ -12,9 +12,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'RefApp',
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
-        '/': (context) => MyHomePage(),
+        '/login': (context) => Login(),
+        '/home': (context) => MyHomePage(),
       },
     );
   }
