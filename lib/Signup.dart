@@ -3,19 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:ref_app/FormPage.dart';
 
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Signup extends StatefulWidget {
+  const Signup({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Signup> createState() => SignupState();
 }
 
-class _LoginState extends State<Login> {
+class SignupState extends State<Signup> {
   @override
   void initState()  {
     Future.delayed(
-      Duration(seconds: 3), () {
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => FormPage(formType: FormType.LOGIN)), (route) => false);
+        Duration(seconds: 3), () {
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => FormPage(formType: FormType.SIGNUP)), (route) => false);
     }
     );
     super.initState();

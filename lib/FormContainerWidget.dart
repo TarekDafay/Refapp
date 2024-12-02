@@ -11,8 +11,10 @@ class FormContainerWidget extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? inputType;
+  final double? upperPadding;
+  final double? lowerPadding;
 
-  const FormContainerWidget( {
+  FormContainerWidget( {
     this.controller,
     this.fieldKey,
     this.isPasswordField,
@@ -23,18 +25,29 @@ class FormContainerWidget extends StatefulWidget {
     this.validator,
     this.onFieldSubmitted,
     this.inputType,
+    this.upperPadding,
+    this.lowerPadding,
   });
 
   @override
-  State<FormContainerWidget> createState() => _FormContainerWidgetState();
+  State<FormContainerWidget> createState() => new _FormContainerWidgetState();
 }
 
 class _FormContainerWidgetState extends State<FormContainerWidget> {
   bool _obscureText = true;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
+      padding: EdgeInsets.only(top:1, right: 1, left: 1),
+      child: Column(
+    children: [
+      SizedBox(height: widget.upperPadding),
+      Container(
       width: double.infinity,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
@@ -42,30 +55,34 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: new TextFormField(
-        style: TextStyle(color: Colors.black),
-        controller: widget.controller,
-        keyboardType: widget.inputType,
-        key: widget.fieldKey,
-        obscureText: widget.isPasswordField == true? _obscureText : false,
-        onSaved: widget.onSaved,
-        validator: widget.validator,
-        onFieldSubmitted: widget.onFieldSubmitted,
-        decoration: new InputDecoration(
-          border: InputBorder.none,
-          filled: true,
-          hintText: widget.hintText,
-          hintStyle: TextStyle(color: Colors.black45),
-          suffixIcon: new GestureDetector(
-            onTap: () {
-              setState(() {
-                _obscureText = !_obscureText;
-              });
-            },
-            child:
-            widget.isPasswordField==true? Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: _obscureText == false ? Colors.blue : Colors.grey,) : Text(""),
+          style: TextStyle(color: Colors.black),
+          controller: widget.controller,
+          keyboardType: widget.inputType,
+          key: widget.fieldKey,
+          obscureText: widget.isPasswordField == true? _obscureText : false,
+          onSaved: widget.onSaved,
+          validator: widget.validator,
+          onFieldSubmitted: widget.onFieldSubmitted,
+          decoration: new InputDecoration(
+            border: InputBorder.none,
+            filled: true,
+            hintText: widget.hintText,
+            hintStyle: TextStyle(color: Colors.black45),
+            suffixIcon: new GestureDetector(
+              onTap: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
+              child:
+              widget.isPasswordField==true? Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: _obscureText == false ? Colors.blue : Colors.grey,) : Text(""),
+            ),
           ),
         ),
       ),
+      SizedBox(height: widget.lowerPadding),
+      ],
+    ),
     );
   }
 }
