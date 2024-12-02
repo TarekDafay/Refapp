@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ref_app/FormContainerWidget.dart';
+import 'package:ref_app/home_screen.dart';
+import 'package:ref_app/toolbar.dart';
 
 enum FormType {
   LOGIN,
@@ -52,7 +54,9 @@ class FormPage extends StatelessWidget {
                   hintText: "Password",
                   isPasswordField: true
               ),
-              Container(
+              GestureDetector(
+                onTap: () { Navigator.pushNamed(context, "/home"); },
+                child: Container(
                 width: double.infinity,
                 height: 45,
                 decoration: BoxDecoration(
@@ -69,11 +73,33 @@ class FormPage extends StatelessWidget {
                       ),
                     )
                 ),
+              ),
+              ),
+              Visibility(
+                visible: formType == FormType.LOGIN,
+                child:
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("You don't have an account?"),
+                      SizedBox(width: 5),
+                      GestureDetector(
+                        onTap: () { Navigator.pushNamed(context, "/signup"); },
+                        child: Text(
+                          "Sign Up!",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      )
+
+                    ],
+                  ),
               )
-            ],
-          ),
+        ],
         ),
       ),
-    );
+    ));
   }
 }

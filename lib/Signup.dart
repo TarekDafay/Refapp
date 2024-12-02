@@ -14,7 +14,7 @@ class SignupState extends State<Signup> {
   @override
   void initState()  {
     Future.delayed(
-        Duration(seconds: 3), () {
+        Duration(milliseconds: 3), () {
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => FormPage(formType: FormType.SIGNUP)), (route) => false);
     }
     );
