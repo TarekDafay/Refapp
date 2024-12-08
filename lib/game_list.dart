@@ -1,14 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-
-// Api documentation available at https://api.openligadb.de/index.html
-// const endpoint = "https://api.openligadb.de/getmatchdata/"; // https://api.openligadb.de/getmatchdata/bl1/2020/1
-const endpoint = "https://api.openligadb.de/getmatchdata/bl1/2020/1";
-
-
+import 'package:ref_app/MatchDetailsScreen.dart';
+import 'package:ref_app/ApiCalls.dart';
 
 class MatchesListView extends StatefulWidget {
   @override
@@ -16,126 +10,194 @@ class MatchesListView extends StatefulWidget {
 }
 
 class _MatchesListViewState extends State<MatchesListView> {
-  late Future<List<Map<String, dynamic>>> matches;
 
-  Future<List<Map<String, dynamic>>> fetchMatches() async {
-    final url = Uri.parse(endpoint); // Replace with your API endpoint
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map<Map<String, dynamic>>((match) => match).toList();
-    } else {
-      throw Exception('Failed to load matches');
-    }
+  @override
+  void initState() {
+    super.initState();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> sections = [
+      {
+        'title': 'Bundesliga',
+        'seasons': [
+          {'year': '2020', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 1 to 10
+          {'year': '2021', 'startMatchday': 1, 'endMatchday': 34},  // Matchdays 1 to 6
+          {'year': '2022', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 5 to 12
+        ],
+      },
+      {
+        'title': 'Your Matches',
+        'userId': 'user123',
+      },
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Matches'),
+      ),
+      body:
+        ListView.builder(
+          itemCount: sections.length,
+          itemBuilder: (context, index) {
+            final section = sections[index];
+            final title = section['title'] ?? 'Unkown';
+
+            if(title == 'Bundesliga') {
+              final seasons = section['seasons'] ?? [];
+              return SectionWidget (
+                title: title,
+                seasons: seasons,
+              );
+            } else if(title == 'Your Matches') {
+              final userId = section['userId'] as String;
+              return UserMatchesSection(userId: userId);
+            }
+          }
+        ),
+    );
+  }
+}
+
+class SectionWidget extends StatelessWidget {
+  final String title;
+  final List<Map<String, dynamic>> seasons;
+
+  const SectionWidget({required this.title, required this.seasons, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      children: seasons
+          .map((season) => SeasonWidget(
+        year: season['year'],
+        startMatchday: season['startMatchday'],
+        endMatchday: season['endMatchday'],
+      ))
+          .toList(),
+    );
+  }
+}
+
+class UserMatchesSection extends StatelessWidget {
+  final String userId;
+
+  const UserMatchesSection({required this.userId, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text(
+        "Your Matches",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      children: [
+        // TODO implement Fussball.de Matches, that can be added by the User.
+        ListTile(
+          title: Center(
+            child: Text(
+              "This feature is coming soon and is being worked on.",
+              style: TextStyle(
+                fontSize: 16,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SeasonWidget extends StatelessWidget {
+  final String year;
+  final int startMatchday;
+  final int endMatchday;
+
+  const SeasonWidget({
+    required this.year,
+    required this.startMatchday,
+    required this.endMatchday,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final matchdays = List.generate(endMatchday - startMatchday + 1, (index) => startMatchday + index);
+
+    return ExpansionTile(
+      title: Text('Season $year'),
+      children: matchdays
+          .map((matchday) => MatchdayWidget(
+        year: year,
+        matchday: matchday,
+      ))
+          .toList(),
+    );
+  }
+}
+
+class MatchdayWidget extends StatelessWidget {
+  final String year;
+  final int matchday;
+
+  const MatchdayWidget({required this.year, required this.matchday, Key? key}) : super(key: key);
+
 
   String formatDate(String dateTime) {
     final DateTime parsedDate = DateTime.parse(dateTime);
     return DateFormat('dd.MM.yyyy').format(parsedDate);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    matches = fetchMatches();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Matches'),
-      ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: matches,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No matches found'));
-          }
+    return ExpansionTile(
+      title: Text('Matchday $matchday'),
+      children: [
+        FutureBuilder<List<Map<String, dynamic>>>(
+          future: fetchMatches(year, matchday),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error loading matches'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No matches available'));
+            }
 
-          final matchesData = snapshot.data!;
+            final matches = snapshot.data!;
+            return Column(
+              children: matches.map((match) {
+                final String formattedDate = formatDate(match['date']);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MatchDetailScreen(
+                          match: match,
+                          formattedDate: "123",
 
-          return ListView.separated(
-            padding: const EdgeInsets.all(8),
-            itemCount: matchesData.length,
-            itemBuilder: (context, index) {
-              final match = matchesData[index];
-              final String formattedDate = formatDate(match['matchDateTime']);
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MatchDetailScreen(match: match, formattedDate: formattedDate),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 50,
-                  color: Colors.amber[100],
-                  child: Center(
-                    child: Text('${match['team1']['teamName']} vs ${match['team2']['teamName']}'),
+                        ),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    title: Text(match['name'] ?? 'Unknown Match'),
                   ),
-                ),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class MatchDetailScreen extends StatelessWidget {
-  final Map<String, dynamic> match;
-
-  final String formattedDate;
-
-  const MatchDetailScreen({Key? key, required this.match, required this.formattedDate}) : super(key: key);
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    final sortedGoals = List<Map<String, dynamic>>.from(match['goals'] ?? []);
-    sortedGoals.sort((a, b) => a['matchMinute'].compareTo(b['matchMinute']));
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${match['team1']['shortName']} vs ${match['team2']['shortName']}'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${match['group']['groupName']}'),
-            Text('Liga: ${match['leagueName']}'),
-            Text('Datum: $formattedDate'),
-            Text('Wo: ${match['location']['locationCity']} - ${match['location']['locationStadium']}'),
-            const SizedBox(height: 16),
-            Text('Team 1: ${match['team1']['teamName']}'),
-            Text('Team 2: ${match['team2']['teamName']}'),
-            const SizedBox(height: 16),
-            if (sortedGoals.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Goals:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ...sortedGoals.map((goal) => Text(
-                      'Minute ${goal['matchMinute']}: ${goal['goalGetterName']} (${goal['scoreTeam1']} - ${goal['scoreTeam2']})')),
-                ],
-              )
-            else
-              const Text('No goals in this match'),
-          ],
+                );
+              }).toList(),
+            );
+          },
         ),
-      ),
+      ],
     );
   }
 }
