@@ -22,9 +22,9 @@ class _MatchesListViewState extends State<MatchesListView> {
       {
         'title': 'Bundesliga',
         'seasons': [
-          {'year': '2020', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 1 to 10
-          {'year': '2021', 'startMatchday': 1, 'endMatchday': 34},  // Matchdays 1 to 6
-          {'year': '2022', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 5 to 12
+          {'year': '2022', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 1 to 10
+          {'year': '2023', 'startMatchday': 1, 'endMatchday': 34},  // Matchdays 1 to 6
+          {'year': '2024', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 5 to 12
         ],
       },
       {
@@ -162,7 +162,7 @@ class MatchdayWidget extends StatelessWidget {
       title: Text('Matchday $matchday'),
       children: [
         FutureBuilder<List<Map<String, dynamic>>>(
-          future: fetchMatches(year, matchday),
+          future: fetchEssentialMatchData(year, matchday),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -175,16 +175,13 @@ class MatchdayWidget extends StatelessWidget {
             final matches = snapshot.data!;
             return Column(
               children: matches.map((match) {
-                final String formattedDate = formatDate(match['date']);
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MatchDetailScreen(
-                          match: match,
-                          formattedDate: "123",
-
+                          matchId: match['id'],
                         ),
                       ),
                     );
