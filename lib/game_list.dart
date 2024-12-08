@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import 'package:ref_app/MatchDetailsScreen.dart';
 import 'package:ref_app/ApiCalls.dart';
+import 'package:ref_app/AddGamePage.dart';
 
 class MatchesListView extends StatefulWidget {
   @override
@@ -99,17 +100,32 @@ class UserMatchesSection extends StatelessWidget {
       children: [
         // TODO implement Fussball.de Matches, that can be added by the User.
         ListTile(
-          title: Center(
-            child: Text(
-              "This feature is coming soon and is being worked on.",
-              style: TextStyle(
-                fontSize: 16,
-                fontStyle: FontStyle.italic,
-                color: Colors.grey,
+          title:
+              Center(
+                child: Text(
+                  "This feature is coming soon and is being worked on.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
-            ),
-          ),
         ),
+        SizedBox(
+          width: 150,
+          child: ElevatedButton(
+            onPressed: ()  {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => createFussballDEGamePage()
+                ),
+              );
+            },
+            child: Text("Create New!"),
+          ),
+        )
       ],
     );
   }

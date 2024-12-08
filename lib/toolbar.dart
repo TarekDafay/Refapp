@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:ref_app/home_screen.dart';
+import 'package:ref_app/Settings_Page.dart';
 import 'package:ref_app/game_list.dart';
 import 'package:ref_app/Statistics_Tab.dart';
 
