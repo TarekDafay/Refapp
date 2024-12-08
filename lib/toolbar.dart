@@ -4,12 +4,12 @@ import 'package:ref_app/home_screen.dart';
 import 'package:ref_app/game_list.dart';
 import 'package:ref_app/editor_view.dart';
 
-class MyHomePage extends StatefulWidget {
+class Toolbar extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _ToolbarState createState() => _ToolbarState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ToolbarState extends State<Toolbar> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     MatchesListView(),
@@ -37,8 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.mode_edit),
-            label: 'Editor',
+            icon: Icon(Icons.add_chart),
+            label: 'Statistics',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
