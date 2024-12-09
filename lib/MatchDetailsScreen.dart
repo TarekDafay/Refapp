@@ -88,11 +88,11 @@ class MatchDetailScreen extends StatelessWidget {
         SizedBox(width: 25,),
         Column(
             children: [Text(
-              "${matchDetails['matchResults'][1]['pointsTeam1']} : ${matchDetails['matchResults'][1]['pointsTeam2']}",
+              "${matchDetails['matchResults'][0]['pointsTeam1']} : ${matchDetails['matchResults'][0]['pointsTeam2']}",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
               Text(
-                "${matchDetails['matchResults'][0]['pointsTeam1']} : ${matchDetails['matchResults'][1]['pointsTeam2']}",
+                "${matchDetails['matchResults'][1]['pointsTeam1']} : ${matchDetails['matchResults'][1]['pointsTeam2']}",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
               ),
             ]
