@@ -61,14 +61,52 @@ class FussballDeParser {
       return Map<String,dynamic>();
     }
 
+    Future<Map<String,dynamic>> _getMatchFacts(var document) async {
+      var ogTitleElement = document.querySelector('meta[property="og:title"]');
+      var ogTitle = ogTitleElement?.attributes['content'] ?? '';
+
+      RegExp dateRegExp = RegExp(r'(\d{2}\.\d{2}\.\d{4})');
+      var match = dateRegExp.firstMatch(ogTitle);
+      var date = 'Unknown';
+      if (match != null) {
+        date = match.group(0)!; // The matched date (e.g., "14.12.2024")
+        print('Date: $date');
+      } else {
+        print('No date found.');
+      }
+
+      // Find the <span> tag inside the "headline" div
+      var headlineElement = document.querySelector('.headline span');
+
+      // Extract the time (kickoff time) from the <span> tag
+      var kickoffTime = headlineElement?.text.trim() ?? 'No kickoff time found';
+
+      kickoffTime = kickoffTime.replaceAll(RegExp(r'Uhr$'), '');
+
+      var compName = 'Unknown';
+      var element = document.querySelector('#stage > div > div > div > div > div.stage-header > a.competition');
+      var competitionName = element?.text.trim() ?? 'Not found';
+
+
+      print('Kickoff Time: $kickoffTime');
+      Map<String, dynamic> result = {
+        'date': date,
+        'kickoff-time': kickoffTime,
+        'competition' : competitionName,
+      };
+
+      return result;
+
+    }
 
     Future<void> _writeMatchInfoToDataBase()  async {
       DatabaseReference database = FirebaseDatabase.instance.ref();
-      final response = await http.get(Uri.parse("https://www.fussball.de/spiel/fc-st-pauli-sv-werder-bremen/-/spiel/02Q2FFBQFG000000VS5489B4VVGB4UUN#!"));
+      final response = await http.get(Uri.parse(_url));
       final document = html.parse(response.body);
 
       final Map<String,dynamic> matchEvents = await _getMatchEvents(document);
       final Map<String,dynamic> teams = await _getTeams(document);
+      final Map<String,dynamic> matchFacts = await _getMatchFacts(document);
 
       final FirebaseAuth _auth = FirebaseAuth.instance;
       User? currentUser = _auth.currentUser;
@@ -81,9 +119,11 @@ class FussballDeParser {
       String matchId = database.child(dbPath).push().key!;
 
       Map<String,dynamic> dbEntry = {
+          'match-facts' : matchFacts,
           'role' : _role,
           'teams' : teams,
-          'match-events' : matchEvents
+          'match-events' : matchEvents,
+          'match-url' : _url,
       };
 
       dbPath += "/$matchId";
