@@ -1,6 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:ref_app/FormContainerWidget.dart';
+import 'package:ref_app/MatchToDataBaseParser.dart';
 
-class createFussballDEGamePage extends StatelessWidget {
+class createFussballDEGamePage extends StatefulWidget {
+
+  @override
+  State<createFussballDEGamePage> createState() => _createFussballDEGamePage_State();
+}
+
+class _createFussballDEGamePage_State extends State<createFussballDEGamePage> {
+
+  TextEditingController _linkFieldController = TextEditingController();
+  final List<String> _roles = ['Referee', 'Assistant', 'Spectator'];
+  String _selectedRole = 'Referee';
+  @override
+  void dispose() {
+    _linkFieldController.dispose();
+    super.dispose();
+  }
+
+  Widget createDropDownButton() {
+    return DropdownButton<String>(
+      value: _selectedRole,
+      onChanged: (String? newValue) {
+        setState(() {
+          _selectedRole = newValue!;
+        });
+      },
+      items: _roles.map<DropdownMenuItem<String>>((String role) {
+        return DropdownMenuItem<String>(
+          value: role,
+          child: Text(role),
+        );
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,10 +46,24 @@ class createFussballDEGamePage extends StatelessWidget {
             height: 150,
           ),
           Row (
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                    createDropDownButton()
+              ]
+          ),
+          Row (
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text("", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
-                ),
+              SizedBox(
+                height: 70,
+                width: 300,
+                child:
+                  FormContainerWidget(
+                    lowerPadding: 10,
+                    hintText: "Fussball.de Match Url",
+                    isPasswordField: false,
+                    controller: _linkFieldController,
+                  ),
               ),
             ],
           ),
@@ -29,7 +78,17 @@ class createFussballDEGamePage extends StatelessWidget {
                         context, "/home", (Route<
                         dynamic> route) => false);
                   },
-                  child: Text("Cancel!"),
+                  child: Text("Cancel"),
+                ),
+              ),
+              SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: ()  {
+                    new FussballDeParser(_linkFieldController.text, _selectedRole);
+                    print(_linkFieldController);
+                  },
+                  child: Text("Submit"),
                 ),
               )
             ]

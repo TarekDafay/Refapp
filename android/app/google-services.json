@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1001465387311",
+    "firebase_url": "https://refapp-ce63e-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "refapp-ce63e",
     "storage_bucket": "refapp-ce63e.firebasestorage.app"
   },
