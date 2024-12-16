@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:ref_app/home_screen.dart';
+import 'package:ref_app/Settings_Page.dart';
 import 'package:ref_app/game_list.dart';
-import 'package:ref_app/editor_view.dart';
+import 'package:ref_app/Statistics_Tab.dart';
 
 class Toolbar extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class _ToolbarState extends State<Toolbar> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     MatchesListView(),
-    Test(),
+    Statistics(),
     HomeScreen(),
   ];
 

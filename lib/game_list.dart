@@ -3,6 +3,9 @@ import 'package:intl/intl.dart';
 
 import 'package:ref_app/MatchDetailsScreen.dart';
 import 'package:ref_app/ApiCalls.dart';
+import 'package:ref_app/AddGamePage.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MatchesListView extends StatefulWidget {
   @override
@@ -51,8 +54,7 @@ class _MatchesListViewState extends State<MatchesListView> {
                 seasons: seasons,
               );
             } else if(title == 'Your Matches') {
-              final userId = section['userId'] as String;
-              return UserMatchesSection(userId: userId);
+              return UserMatchesSection();
             }
           }
         ),
@@ -84,36 +86,79 @@ class SectionWidget extends StatelessWidget {
   }
 }
 
-class UserMatchesSection extends StatelessWidget {
-  final String userId;
+class UserMatchesSection extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState()  => _userMatchesState();
+}
 
-  const UserMatchesSection({required this.userId, Key? key}) : super(key: key);
+class _userMatchesState extends State<UserMatchesSection> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text(
-        "Your Matches",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-      ),
-      children: [
-        // TODO implement Fussball.de Matches, that can be added by the User.
-        ListTile(
-          title: Center(
-            child: Text(
-              "This feature is coming soon and is being worked on.",
-              style: TextStyle(
-                fontSize: 16,
-                fontStyle: FontStyle.italic,
-                color: Colors.grey,
-              ),
-            ),
-          ),
+        title: Text('Your Matches'),
+        children: [
+        FutureBuilder<List<Map<String, dynamic>>>(
+        future: fetchMatchesFromFirebase(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading matches'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No matches available'));
+          }
+
+          List<Map<String,dynamic>> matches = snapshot.data!;
+          int i = 0;
+          print(matches);
+          return Column(
+            children:
+              matches.map((match) {
+                final String homeTeam = match['teams']['home-team']['name'];
+                final String awayTeam = match['teams']['away-team']['name'];
+
+                return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomGameDetailScreen(match: match)
+                    ),
+                  );
+                },
+                child: ListTile(
+                  title: Text("$homeTeam vs $awayTeam" ?? 'Unknown Match'),
+                ),
+              );
+            }).toList(),
+
+          );
+        }
         ),
+        SizedBox(
+          width: 150,
+          child: ElevatedButton(
+            onPressed: ()  {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => createFussballDEGamePage()
+                ),
+              );
+            },
+            child: Text("Create New!"),
+          ),
+        )
       ],
     );
   }
 }
+
 
 class SeasonWidget extends StatelessWidget {
   final String year;

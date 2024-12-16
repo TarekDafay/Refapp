@@ -122,41 +122,83 @@ class MatchDetailScreen extends StatelessWidget {
       ],
     );
   }
-    /*
-    final sortedGoals = List<Map<String, dynamic>>.from(match['goals'] ?? []);
-    sortedGoals.sort((a, b) => a['matchMinute'].compareTo(b['matchMinute']));
+}
+
+class CustomGameDetailScreen extends StatelessWidget {
+  final Map<String,dynamic> match;
+
+  const CustomGameDetailScreen({required this.match, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${match['team1']['shortName']} vs ${match['team2']['shortName']}'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${match['group']['groupName']}'),
-            Text('Liga: ${match['leagueName']}'),
-            Text('Datum: $formattedDate'),
-            Text('Wo: ${match['location']['locationCity']} - ${match['location']['locationStadium']}'),
-            const SizedBox(height: 16),
-            Text('Team 1: ${match['team1']['teamName']}'),
-            Text('Team 2: ${match['team2']['teamName']}'),
-            const SizedBox(height: 16),
-            if (sortedGoals.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        appBar: AppBar(title: Text('Match Details')),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  const Text('Goals:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ...sortedGoals.map((goal) => Text(
-                      'Minute ${goal['matchMinute']}: ${goal['goalGetterName']} (${goal['scoreTeam1']} - ${goal['scoreTeam2']})')),
+                  Expanded(
+                    child: new Container(
+                        margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                        child: Divider(
+                          color: Colors.grey,
+                          height: 35,
+                          thickness: 2,
+                        )
+                    ),
+                  ),
                 ],
+              ),
+              _DrawGoals(context),
+              SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: ()  {
+                      deleteEntry(match['match-id']);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/home", (Route<
+                          dynamic> route) => false);
+                  },
+                  child: Text("Delete!"),
+                ),
               )
-            else
-              const Text('No goals in this match'),
-          ],
-        ),
+            ],
       ),
+        )
     );
   }
-   */
+
+  Widget _DrawGoals(BuildContext context) {
+    final half1 = match['match-events']['first-half']['events'];
+    final half2 = match['match-events']['second-half']['events'];
+
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Goals:', style: TextStyle(fontWeight: FontWeight.bold)),
+            _drawHalf(context, half1),
+            SizedBox.fromSize(size: Size(30, 40),),
+            _drawHalf(context, half2),
+          ]
+      ),
+      ],
+    );
+  }
+
+  Widget _drawHalf(BuildContext context, var half )  {
+    if (half.isNotEmpty)
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...half.map((event) => Text(
+              'Minute ${event['time']}: ${event['team']} ${event['type']}')),
+        ],
+      );
+    else
+      return const Text('Nothing happened in this half');
+  }
 }
