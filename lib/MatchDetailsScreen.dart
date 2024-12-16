@@ -123,3 +123,82 @@ class MatchDetailScreen extends StatelessWidget {
     );
   }
 }
+
+class CustomGameDetailScreen extends StatelessWidget {
+  final Map<String,dynamic> match;
+
+  const CustomGameDetailScreen({required this.match, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text('Match Details')),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: new Container(
+                        margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                        child: Divider(
+                          color: Colors.grey,
+                          height: 35,
+                          thickness: 2,
+                        )
+                    ),
+                  ),
+                ],
+              ),
+              _DrawGoals(context),
+              SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: ()  {
+                      deleteEntry(match['match-id']);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/home", (Route<
+                          dynamic> route) => false);
+                  },
+                  child: Text("Delete!"),
+                ),
+              )
+            ],
+      ),
+        )
+    );
+  }
+
+  Widget _DrawGoals(BuildContext context) {
+    final half1 = match['match-events']['first-half']['events'];
+    final half2 = match['match-events']['second-half']['events'];
+
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Goals:', style: TextStyle(fontWeight: FontWeight.bold)),
+            _drawHalf(context, half1),
+            SizedBox.fromSize(size: Size(30, 40),),
+            _drawHalf(context, half2),
+          ]
+      ),
+      ],
+    );
+  }
+
+  Widget _drawHalf(BuildContext context, var half )  {
+    if (half.isNotEmpty)
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...half.map((event) => Text(
+              'Minute ${event['time']}: ${event['team']} ${event['type']}')),
+        ],
+      );
+    else
+      return const Text('Nothing happened in this half');
+  }
+}

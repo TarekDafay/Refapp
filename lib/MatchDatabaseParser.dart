@@ -1,5 +1,3 @@
-import 'package:beautiful_soup_dart/beautiful_soup.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' as http;
@@ -124,6 +122,7 @@ class FussballDeParser {
           'teams' : teams,
           'match-events' : matchEvents,
           'match-url' : _url,
+          'match-id' : matchId,
       };
 
       dbPath += "/$matchId";

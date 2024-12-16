@@ -1,7 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:html/parser.dart' as html;
 
 // Api documentation available at https://api.openligadb.de/index.html
 // const endpoint = "https://api.openligadb.de/getmatchdata/"; // https://api.openligadb.de/getmatchdata/bl1/2020/1
@@ -60,9 +64,63 @@ Future<List<Map<String, dynamic>>> fetchDetailedMatchData(int matchId) async {
   }
 }
 
-Future<List<Map<String, dynamic>>> fetchUserMatches(String userId) async {
-  // TODO Create correct implementation
+Future<List<Map<String,dynamic>>> fetchMatchesFromFirebase() async {
+  try {
+    // Get the current authenticated user
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      throw Exception("User not logged in");
+    }
+
+    String userId = currentUser.uid;
+
+    // Reference the user's matches in the database
+    DatabaseReference matchesRef = FirebaseDatabase.instance
+        .ref()
+        .child('users/$userId/matches');
+
+    // Fetch data from the database
+    DataSnapshot snapshot = await matchesRef.get();
+    Map<Object?, Object?>? data = snapshot.value as Map<Object?, Object?>?;
+
+    if (data != null) {
+      List<Map<String, dynamic>> listOfMaps = [];
+
+      // Iterate over the map and cast each entry to Map<String, dynamic>
+      data.forEach((key, value) {
+        if (value is Map) {
+          listOfMaps.add(Map<String, dynamic>.from(value as Map<Object?, Object?>));
+        }
+      });
+      return listOfMaps;
+    }
+  } catch (e) {
+    print("Error fetching matches: $e");
+  }
   return [];
 }
 
+
+Future<void> deleteEntry(String entryKey) async {
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+  if (currentUser == null) {
+    throw Exception("User not logged in");
+  }
+
+  String userId = currentUser.uid;
+
+  // Reference the user's matches in the database
+  DatabaseReference matchesRef = FirebaseDatabase.instance
+      .ref()
+      .child('users/$userId/matches/$entryKey');
+
+  try {
+    await matchesRef.remove();
+    print('Entry deleted successfully');
+  } catch (e) {
+    print('Error deleting entry: $e');
+  }
+}
 
