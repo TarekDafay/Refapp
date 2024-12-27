@@ -86,7 +86,9 @@ class _createFussballDEGamePage_State extends State<createFussballDEGamePage> {
                 child: ElevatedButton(
                   onPressed: ()  {
                     new FussballDeParser(_linkFieldController.text, _selectedRole);
-                    print(_linkFieldController);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/home", (Route<
+                        dynamic> route) => false);
                   },
                   child: Text("Submit"),
                 ),
