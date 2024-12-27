@@ -23,4 +23,13 @@ class FireBaseAuthService {
     }
     return null;
   }
+
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+      print("User signed out");
+    } catch(e) {
+      print("some error occured: $e");
+    }
+  }
 }
