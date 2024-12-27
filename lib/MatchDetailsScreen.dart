@@ -137,6 +137,7 @@ class CustomGameDetailScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+              _resultHeader(context, match),
               Row(
                 children: [
                   Expanded(
@@ -151,7 +152,7 @@ class CustomGameDetailScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              _DrawGoals(context),
+              _DrawMatchEvents(context),
               SizedBox(
                 width: 150,
                 child: ElevatedButton(
@@ -170,7 +171,7 @@ class CustomGameDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _DrawGoals(BuildContext context) {
+  Widget _DrawMatchEvents(BuildContext context) {
     final half1 = match['match-events']['first-half']['events'];
     final half2 = match['match-events']['second-half']['events'];
 
@@ -179,7 +180,7 @@ class CustomGameDetailScreen extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Goals:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('Match events:', style: TextStyle(fontWeight: FontWeight.bold)),
             _drawHalf(context, half1),
             SizedBox.fromSize(size: Size(30, 40),),
             _drawHalf(context, half2),
@@ -200,5 +201,97 @@ class CustomGameDetailScreen extends StatelessWidget {
       );
     else
       return const Text('Nothing happened in this half');
+  }
+
+  Widget _resultHeader(BuildContext context, Map<String, dynamic> matchDetails) {
+    final away = match['teams']['away-team']['name'];
+    final home = match['teams']['home-team']['name'];
+
+    final competition = match['match-facts']['competition'];
+    final kickoffTime = match['match-facts']['kickoff-time'];
+    final date = match['match-facts']['date'];
+    final role = match['role'];
+
+    final half1 = match['match-events']['first-half']['events'];
+    int halfTimeScoreHome = 0;
+    int halfTimeScoreAway = 0;
+
+    for(var event in half1) {
+        if(event["type"] == "goal") {
+          if(event["team"] == "home") {
+            halfTimeScoreHome++;
+          } else  {
+            halfTimeScoreAway++;
+          }
+        }
+    }
+
+    final half2 = match['match-events']['second-half']['events'];
+    int fullTimeScoreHome = halfTimeScoreHome;
+    int fullTimeScoreAway = halfTimeScoreAway;
+
+    for(var event in half2) {
+      if(event["type"] == "goal") {
+        if(event["team"] == "home") {
+          fullTimeScoreHome++;
+        } else  {
+          fullTimeScoreAway++;
+        }
+      }
+    }
+
+    return Column(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(role,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                )
+            ),
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+              Text(competition),
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(date + " - " + kickoffTime + " Uhr"),
+          ],
+        ),
+        Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(home),
+          SizedBox(width: 25,),
+          Column(
+              children: [Text(
+                "${halfTimeScoreHome} : ${halfTimeScoreAway}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
+                Text(
+                  "${fullTimeScoreHome} : ${fullTimeScoreAway}",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
+                ),
+              ]
+          ),
+          SizedBox(width: 25,),
+          Text(away),
+        ],
+      ),
+
+    ],
+    );
+
   }
 }
