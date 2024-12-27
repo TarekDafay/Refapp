@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:ref_app/MatchDetailsScreen.dart';
 import 'package:ref_app/ApiCalls.dart';
 import 'package:ref_app/AddGamePage.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class MatchesListView extends StatefulWidget {
   @override
@@ -25,14 +23,13 @@ class _MatchesListViewState extends State<MatchesListView> {
       {
         'title': 'Bundesliga',
         'seasons': [
-          {'year': '2022', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 1 to 10
-          {'year': '2023', 'startMatchday': 1, 'endMatchday': 34},  // Matchdays 1 to 6
-          {'year': '2024', 'startMatchday': 1, 'endMatchday': 34}, // Matchdays 5 to 12
+          {'year': '2022', 'startMatchday': 1, 'endMatchday': 34},
+          {'year': '2023', 'startMatchday': 1, 'endMatchday': 34},
+          {'year': '2024', 'startMatchday': 1, 'endMatchday': 34},
         ],
       },
       {
         'title': 'Your Matches',
-        'userId': 'user123',
       },
     ];
 
@@ -222,14 +219,14 @@ class MatchdayWidget extends StatelessWidget {
               children: matches.map((match) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MatchDetailScreen(
-                          matchId: match['id'],
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MatchDetailScreen(
+                            matchId: match['id'],
+                          ),
                         ),
-                      ),
-                    );
+                      );
                   },
                   child: ListTile(
                     title: Text(match['name'] ?? 'Unknown Match'),

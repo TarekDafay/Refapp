@@ -19,36 +19,37 @@ class MatchDetailScreen extends StatelessWidget {
             else if(snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
-            else if(!snapshot.hasData) {
+            else if(!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(child: Text('No data avaiable.'));
             }
             final matchDetails = snapshot.data!.first;
             return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _resultHeader(context, matchDetails),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: new Container(
-                            margin: const EdgeInsets.only(left: 5.0, right: 5.0),
-                            child: Divider(
-                              color: Colors.grey,
-                              height: 35,
-                              thickness: 2,
-                            )
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _resultHeader(context, matchDetails),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: new Container(
+                              margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                              child: Divider(
+                                color: Colors.grey,
+                                height: 35,
+                                thickness: 2,
+                              )
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  _DrawGoals(context, matchDetails),
-                ],
-              )
+                      ],
+                    ),
+                    _DrawGoals(context, matchDetails),
+                  ],
+                )
             );
           }
       )
-    );
+  );
+
   }
 
   Widget _displayImageFromURL(BuildContext context, String ImageURL, int size) {
@@ -76,9 +77,17 @@ class MatchDetailScreen extends StatelessWidget {
   }
 
   Widget _resultHeader(BuildContext context, Map<String, dynamic> matchDetails) {
+    try {
+
     final team1 = matchDetails['team1'];
     final team2 = matchDetails['team2'];
     final int imageSize = 128;
+
+    final homeFirstHalf = matchDetails['matchResults'][0]['pointsTeam1'];
+    final awayFirstHalf = matchDetails['matchResults'][0]['pointsTeam2'];
+
+    final homeSecondHalf = matchDetails['matchResults'][1]['pointsTeam1'];
+    final awaySecondHalf = matchDetails['matchResults'][1]['pointsTeam2'];
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -88,11 +97,11 @@ class MatchDetailScreen extends StatelessWidget {
         SizedBox(width: 25,),
         Column(
             children: [Text(
-              "${matchDetails['matchResults'][0]['pointsTeam1']} : ${matchDetails['matchResults'][0]['pointsTeam2']}",
+              "${homeFirstHalf} : ${awayFirstHalf}",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
               Text(
-                "${matchDetails['matchResults'][1]['pointsTeam1']} : ${matchDetails['matchResults'][1]['pointsTeam2']}",
+                "${homeSecondHalf} : ${awaySecondHalf}",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
               ),
             ]
@@ -101,6 +110,10 @@ class MatchDetailScreen extends StatelessWidget {
         _displayImageFromURL(context, team2['teamIconUrl'],imageSize),
       ],
     );
+
+    } catch(e)  {
+      return Text("No Game Data as of yet");
+    }
   }
 
   Widget _DrawGoals(BuildContext context, Map<String, dynamic> matchDetails) {
