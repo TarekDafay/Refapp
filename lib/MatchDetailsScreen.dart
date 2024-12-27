@@ -185,22 +185,26 @@ class CustomGameDetailScreen extends StatelessWidget {
   }
 
   Widget _DrawMatchEvents(BuildContext context) {
-    final half1 = match['match-events']['first-half']['events'];
-    final half2 = match['match-events']['second-half']['events'];
+    try {
+      final half1 = match['match-events']['first-half']['events'];
+      final half2 = match['match-events']['second-half']['events'];
 
-    return Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Match events:', style: TextStyle(fontWeight: FontWeight.bold)),
-            _drawHalf(context, half1),
-            SizedBox.fromSize(size: Size(30, 40),),
-            _drawHalf(context, half2),
-          ]
-      ),
-      ],
-    );
+      return Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Match events:', style: TextStyle(fontWeight: FontWeight.bold)),
+              _drawHalf(context, half1),
+              SizedBox.fromSize(size: Size(30, 40),),
+              _drawHalf(context, half2),
+            ]
+        ),
+        ],
+      );
+    } catch(e)  {
+      return Text("Cannot Display Match Events, because Game wasn't played as of yet!");
+    }
   }
 
   Widget _drawHalf(BuildContext context, var half )  {
@@ -217,94 +221,100 @@ class CustomGameDetailScreen extends StatelessWidget {
   }
 
   Widget _resultHeader(BuildContext context, Map<String, dynamic> matchDetails) {
-    final away = match['teams']['away-team']['name'];
-    final home = match['teams']['home-team']['name'];
+    try {
+      final away = match['teams']['away-team']['name'];
+      final home = match['teams']['home-team']['name'];
 
-    final competition = match['match-facts']['competition'];
-    final kickoffTime = match['match-facts']['kickoff-time'];
-    final date = match['match-facts']['date'];
-    final role = match['role'];
+      final competition = match['match-facts']['competition'];
+      final kickoffTime = match['match-facts']['kickoff-time'];
+      final date = match['match-facts']['date'];
+      final role = match['role'];
 
-    final half1 = match['match-events']['first-half']['events'];
-    int halfTimeScoreHome = 0;
-    int halfTimeScoreAway = 0;
+      final half1 = match['match-events']['first-half']['events'];
+      int halfTimeScoreHome = 0;
+      int halfTimeScoreAway = 0;
 
-    for(var event in half1) {
-        if(event["type"] == "goal") {
-          if(event["team"] == "home") {
+      for (var event in half1) {
+        if (event["type"] == "goal") {
+          if (event["team"] == "home") {
             halfTimeScoreHome++;
-          } else  {
+          } else {
             halfTimeScoreAway++;
           }
         }
-    }
+      }
 
-    final half2 = match['match-events']['second-half']['events'];
-    int fullTimeScoreHome = halfTimeScoreHome;
-    int fullTimeScoreAway = halfTimeScoreAway;
+      final half2 = match['match-events']['second-half']['events'];
+      int fullTimeScoreHome = halfTimeScoreHome;
+      int fullTimeScoreAway = halfTimeScoreAway;
 
-    for(var event in half2) {
-      if(event["type"] == "goal") {
-        if(event["team"] == "home") {
-          fullTimeScoreHome++;
-        } else  {
-          fullTimeScoreAway++;
+      for (var event in half2) {
+        if (event["type"] == "goal") {
+          if (event["team"] == "home") {
+            fullTimeScoreHome++;
+          } else {
+            fullTimeScoreAway++;
+          }
         }
       }
-    }
 
-    return Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(role,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold
-                )
-            ),
-          ],
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-              Text(competition),
-          ],
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(date + " - " + kickoffTime + " Uhr"),
-          ],
-        ),
-        Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+      return Column(
         children: [
-          Text(home),
-          SizedBox(width: 25,),
-          Column(
-              children: [Text(
-                "${halfTimeScoreHome} : ${halfTimeScoreAway}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(role,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold
+                  )
               ),
-                Text(
-                  "${fullTimeScoreHome} : ${fullTimeScoreAway}",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
-                ),
-              ]
+            ],
           ),
-          SizedBox(width: 25,),
-          Text(away),
-        ],
-      ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(competition),
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(date + " - " + kickoffTime + " Uhr"),
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(home),
+              SizedBox(width: 25,),
+              Column(
+                  children: [Text(
+                    "${halfTimeScoreHome} : ${halfTimeScoreAway}",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                  ),
+                    Text(
+                      "${fullTimeScoreHome} : ${fullTimeScoreAway}",
+                      style: TextStyle(fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Colors.grey),
+                    ),
+                  ]
+              ),
+              SizedBox(width: 25,),
+              Text(away),
+            ],
+          ),
 
-    ],
-    );
+        ],
+      );
+    } catch(e)  {
+      return Text("Match wasn't played yet");
+    }
 
   }
 }

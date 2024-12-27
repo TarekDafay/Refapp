@@ -62,27 +62,28 @@ class Statistics extends StatelessWidget {
     int acc = 0;
     int matchAmount = 0;
 
-
-    for(var match in matches) {
-      final half1 = match['match-events']['first-half']['events'];
-      final half2 = match['match-events']['first-half']['events'];
-      final all = half1 + half2;
-
-      if(match["role"] == role) {
-        for(var event in all) {
-          if (event["type"] == key) {
-            if (event["team"] == "home") {
-              home++;
-            } else {
-              away++;
+      for (var match in matches) {
+        try {
+          final half1 = match['match-events']['first-half']['events'];
+          final half2 = match['match-events']['first-half']['events'];
+          final all = half1 + half2;
+          if (match["role"] == role) {
+            for (var event in all) {
+              if (event["type"] == key) {
+                if (event["team"] == "home") {
+                  home++;
+                } else {
+                  away++;
+                }
+                acc++;
+              }
             }
-            acc++;
+            matchAmount++;
           }
-        }
-        matchAmount++;
+        } catch(e)  {
+          print("The match has not happened yet");
       }
     }
-
     return {
       "home" : home,
       "away" : away,
